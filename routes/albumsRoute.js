@@ -14,11 +14,30 @@ router.get("/", (req, res) => {
     }
 });
 
+
+
+//Get one album by the ID
+router.get("/:id", (req, res) => {
+  try {
+    con.query(
+      `SELECT * FROM albums WHERE album_id=${req.params.id}`,
+      (err, result) => {
+        if (err) throw err;
+        res.send(result);
+      }
+    );
+  } catch (error) {
+    console.log(error);
+    res.status(400).send(error);
+  }
+});
+
 //ADDING A NEW POST
 router.post("/", (req, res) => {
     const {
       album_id,
       title,
+      artist,
       genre,
       date,
       description,
@@ -28,7 +47,7 @@ router.post("/", (req, res) => {
     } = req.body;
     try {
       con.query(
-        `INSERT INTO albums ( album_id,title,genre,date,description,imgURL,review) VALUES ("${album_id}","${title}", "${genre}", "${date}", "${description}", "${imgURL}", "${review}")`,
+        `INSERT INTO albums ( album_id,title,artist,genre,date,description,imgURL,review) VALUES ("${album_id}","${title}","${artist}", "${genre}", "${date}", "${description}", "${imgURL}", "${review}")`,
         (err, result) => {
           if (err) throw err;
           res.send(result);
@@ -44,7 +63,7 @@ router.post("/", (req, res) => {
   router.delete("/:id", (req, res) => {
     try {
       con.query(
-        `DELETE FROM users WHERE album_id=${req.params.id}`,
+        `DELETE FROM albums WHERE album_id=${req.params.id}`,
         (err, result) => {
           if (err) throw err;
           res.send(result);
